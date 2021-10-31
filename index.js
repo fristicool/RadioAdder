@@ -6,7 +6,7 @@ const btoa = function (str) { return Buffer.from(str).toString('base64'); }
 var bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 
 var SpotifyWebApi = require('spotify-web-api-node');
 const { post } = require("request");
@@ -14,7 +14,7 @@ const req = require("express/lib/request");
 const res = require("express/lib/response");
 app.use(bodyParser.json())
 
-var redirect_uri = "http://localhost:3000"
+var redirect_uri = "http://84.193.72.183:3000"
 var client_id = "0446ec98a7ec44b5b5e8704b9347e7ce"
 var client_secret = "85ee468ff45d4eeca4f0f4fae93cf58e"
 var creating_refresh_token = true
@@ -24,7 +24,7 @@ var latest_refresh_token = ''
 var spotifyApi = new SpotifyWebApi({
     clientId: '0446ec98a7ec44b5b5e8704b9347e7ce',
     clientSecret: '85ee468ff45d4eeca4f0f4fae93cf58e', //private Change
-    redirectUri: 'https://google.com'
+    redirectUri: 'http://84.193.72.183:3000'
 });
 
 function delay(time) {
@@ -69,7 +69,7 @@ const scrapeLatestSong = async () => {
     let [titElement] = await page.$x("//*[@id='content']/div[1]/div[1]/div[1]/div[2]/span[3]")
     let title = await page.evaluate(titElement => titElement.textContent, titElement)
 
-    const search = artist + " " + title;
+    const search = title + " " + artist;
     console.log(search)
 
     // await spotifyApi.clientCredentialsGrant().then(
@@ -127,7 +127,7 @@ const getAuthUrl = async () => {
     let url = 'https://accounts.spotify.com/authorize';
     url += "?client_id=" + client_id;
     url += "&response_type=code";
-    url += "&redirect_uri=" + encodeURI(redirect_uri);
+    url += "&redirect_uri=" + encodeURI("http://84.193.72.183:3000");
     url += "&show_dialog=true";
     url += "&scope=playlist-modify-public";
 
@@ -219,8 +219,11 @@ app.put('/latest/put', (req, res) => {
 
 app.get('/auth', async (req, res) => {
     var auth_uri = await getAuthUrl()
+    
+    console.log(auth_uri)
 
     res.send({ "uri": auth_uri })
+    //res.send({ "uri": "https://accounts.spotify.com/authorize?client_id=0446ec98a7ec44b5b5e8704b9347e7ce&response_type=code&redirect_uri=http://84.193.72.183:3000&show_dialog=true&scope=playlist-modify-public" })
 })
 
 //getAccesToken()
