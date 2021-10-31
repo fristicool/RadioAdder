@@ -6,7 +6,7 @@ const btoa = function (str) { return Buffer.from(str).toString('base64'); }
 var bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 var SpotifyWebApi = require('spotify-web-api-node');
 const { post } = require("request");
